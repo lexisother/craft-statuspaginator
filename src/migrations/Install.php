@@ -2,7 +2,6 @@
 
 namespace brikdigital\statuspaginator\migrations;
 
-use craft\console\controllers\SetupController;
 use craft\db\Migration;
 use craft\helpers\App;
 use GuzzleHttp\Client;
@@ -12,20 +11,24 @@ use GuzzleHttp\Exception\GuzzleException;
 /**
  * """Migration""" that tips off the Statuspaginator instance that this Craft install should be tracked.
  */
-class Install extends Migration {
+class Install extends Migration
+{
     /**
      * Submit this Craft install for tracking.
      *
      * @throws GuzzleException
      */
-    public function safeUp(): bool {
+    public function safeUp(): bool
+    {
 
         $client = new Client(['base_uri' => App::env('STATUSPAGINATOR_API_URL')]);
-        $res = $client->post('/', [
+        $res = $client->post('register', [
             'json' => [
-                'install' => true
+                'install' => true,
             ],
         ]);
+
+        var_dump($res);
 
         return true;
     }
@@ -35,13 +38,16 @@ class Install extends Migration {
      *
      * @throws GuzzleException
      */
-    public function safeDown() {
+    public function safeDown()
+    {
         $client = new Client(['base_uri' => App::env('STATUSPAGINATOR_API_URL')]);
-        $res = $client->post('/', [
+        $res = $client->post('register', [
             'json' => [
-                'install' => false
+                'install' => false,
             ],
         ]);
+
+        var_dump($res);
 
         return true;
     }
