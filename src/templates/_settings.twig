@@ -17,6 +17,12 @@
 {% set docTitle = "Plugins"|t('app') %}
 
 {% block content %}
+    <div class="readable" style="margin-bottom: 1rem">
+        <blockquote class="note tip">
+            <p>Please note that whenever saving these settings, the Craft instance will be registered to Statuspaginator.</p>
+        </blockquote>
+    </div>
+
     <form action="" method="post" accept-charset="UTF-8" data-saveshortcut>
         {{ actionInput('_statuspaginator/settings/save-settings') }}
         {{ redirectInput('settings/plugins/_statuspaginator') }}
@@ -34,5 +40,22 @@
                 required: true
             }) }}
         {% endnamespace %}
+    </form>
+
+    <hr />
+
+    <div class="readable" style="margin-bottom: 1rem">
+        <blockquote class="note warning">
+            <p>Statuspaginator will <b>NOT</b> track this Craft instance after unregistering!</p>
+            <p>After clicking unregister, avoid saving again if you want to keep this instance unregistered.</p>
+        </blockquote>
+    </div>
+
+    <form action="" method="post" accept-charset="UTF-8">
+        {{ actionInput('_statuspaginator/settings/unregister') }}
+        {{ redirectInput('settings/plugins/_statuspaginator') }}
+        {{ csrfInput() }}
+
+        <input type="submit" class="btn submit" value="{{ 'Unregister' }}">
     </form>
 {% endblock %}

@@ -67,12 +67,42 @@ class SettingsController extends Controller {
         return $this->redirectToPostedUrl();
     }
 
+    public function actionUnregister(): ?Response {
+        $statuspaginatorPassed = $this->unregister();
+        if (!$statuspaginatorPassed) {
+            Craft::$app->getSession()->setError("Failed to unregister.");
+            return null;
+        }
+
+        Craft::$app->getSession()->setNotice('Successfully unregistered.');
+        return $this->redirectToPostedUrl();
+    }
+
     private function register(): bool {
         $client = new Client([
             'http_errors' => false,
             'base_uri' => App::env('STATUSPAGINATOR_API_URL')
         ]);
         $res = $client->post('register', [
+            'json' => [
+                'token' => Statuspaginator::$plugin->getSettings()->token,
+                'baseUrl' => App::env('PRIMARY_SITE_URL')
+            ]
+        ]);
+
+        if ($res->getStatusCode() !== 200) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function unregister(): bool {
+        $client = new Client([
+            'http_errors' => false,
+            'base_uri' => App::env('STATUSPAGINATOR_API_URL')
+        ]);
+        $res = $client->post('unregister', [
             'json' => [
                 'token' => Statuspaginator::$plugin->getSettings()->token,
                 'baseUrl' => App::env('PRIMARY_SITE_URL')
