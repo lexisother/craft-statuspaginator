@@ -3,4 +3,14 @@
 
 {% import '_includes/forms.twig' as forms %}
 
-{# ... #}
+{% requireAdmin %}
+
+{{ forms.textField({
+    first: true,
+    label: 'Token',
+    name: 'token',
+    instructions: 'Token known to Statuspaginator',
+    value: settings.token,
+    autofocus: true,
+    required: true
+}) }}
