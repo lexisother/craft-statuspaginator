@@ -53,7 +53,7 @@ class SettingsController extends Controller {
         // Didn't register for some reason? Bail out.
         $statuspaginatorPassed = $this->register();
         if (!$statuspaginatorPassed) {
-            Craft::$app->getSession()->setError("Statuspaginator returned a non-200 response code.");
+            Craft::$app->getSession()->setError("Failed to register at Statuspaginator.");
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'settings' => $settings
