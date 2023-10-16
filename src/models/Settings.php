@@ -11,4 +11,12 @@ use craft\base\Model;
 class Settings extends Model
 {
     public string $token = '';
+
+    public function defineRules(): array
+    {
+        return [
+            [['token'], 'required'],
+            [['token'], 'string', 'min' => 180]
+        ];
+    }
 }
