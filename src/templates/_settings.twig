@@ -1,16 +1,38 @@
-{# @var plugin \brikdigital\statuspaginator\Statuspaginator #}
-{# @var settings \brikdigital\statuspaginator\models\Settings #}
-
-{% import '_includes/forms.twig' as forms %}
-
+{% extends "_layouts/cp" %}
+{% import '_includes/forms' as forms %}
 {% requireAdmin %}
 
-{{ forms.textField({
-    first: true,
-    label: 'Token',
-    name: 'token',
-    instructions: 'Token known to Statuspaginator',
-    value: settings.token,
-    autofocus: true,
-    required: true
-}) }}
+{# NOTE: Resources used and stolen while building this template:
+    - https://craftcms.com/docs/4.x/extend/plugin-settings.html
+    - https://github.com/verbb/wishlist/blob/craft-4/src/templates/settings/general/index.html
+#}
+
+{% set crumbs = [
+    { label: "Settings"|t('app'), url: url('settings') },
+    { label: "Plugins"|t('app'), url: url('settings/plugins') }
+] %}
+
+{% set fullPageForm = true %}
+{% set title = plugin.name|title %}
+{% set docTitle = "Plugins"|t('app') %}
+
+{% block content %}
+    <form action="" method="post" accept-charset="UTF-8" data-saveshortcut>
+        {{ actionInput('_statuspaginator/settings/save-settings') }}
+        {{ redirectInput('settings/plugins/_statuspaginator') }}
+        {{ csrfInput() }}
+
+        {% namespace 'settings' %}
+            {{ forms.textField({
+                first: true,
+                label: 'Token',
+                instructions: 'Token known to Statuspaginator (see its .env file)',
+                id: 'token',
+                name: 'token',
+                value: settings.token,
+                autofocus: true,
+                required: true
+            }) }}
+        {% endnamespace %}
+    </form>
+{% endblock %}

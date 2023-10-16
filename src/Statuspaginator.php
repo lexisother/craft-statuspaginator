@@ -15,6 +15,7 @@ use craft\base\Plugin;
  */
 class Statuspaginator extends Plugin
 {
+    public static Statuspaginator $plugin;
     public string $schemaVersion = '1.0.0';
     public bool $hasCpSettings = true;
 
@@ -31,6 +32,8 @@ class Statuspaginator extends Plugin
     {
         parent::init();
 
+        self::$plugin = $this;
+
         // Defer most setup tasks until Craft is fully initialized
         Craft::$app->onInit(function() {
             $this->attachEventHandlers();
@@ -43,11 +46,11 @@ class Statuspaginator extends Plugin
         return Craft::createObject(Settings::class);
     }
 
-    protected function settingsHtml(): ?string
+    public function getSettingsResponse(): mixed
     {
-        return Craft::$app->view->renderTemplate('_statuspaginator/_settings.twig', [
+        return Craft::$app->controller->renderTemplate('_statuspaginator/_settings.twig', [
             'plugin' => $this,
-            'settings' => $this->getSettings(),
+            'settings' => $this->getSettings()
         ]);
     }
 
