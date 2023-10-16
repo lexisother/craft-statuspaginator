@@ -5,7 +5,9 @@ namespace brikdigital\statuspaginator\controllers;
 use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
 use craft\errors\MissingComponentException;
+use craft\helpers\App;
 use craft\web\Controller;
+use GuzzleHttp\Client;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -36,9 +38,8 @@ class SettingsController extends Controller {
             return null;
         }
 
-        $pluginSettingsSaved = Craft::$app->getPlugins()->savePluginSettings(Statuspaginator::$plugin, $settings->toArray());
-
         // Somehow failed to save the settings? Bail out.
+        $pluginSettingsSaved = Craft::$app->getPlugins()->savePluginSettings(Statuspaginator::$plugin, $settings->toArray());
         if (!$pluginSettingsSaved) {
             Craft::$app->getSession()->setError("Couldn't save settings.");
 
@@ -49,9 +50,39 @@ class SettingsController extends Controller {
             return null;
         }
 
+        // Didn't register for some reason? Bail out.
+        $statuspaginatorPassed = $this->register();
+        if (!$statuspaginatorPassed) {
+            Craft::$app->getSession()->setError("Statuspaginator returned a non-200 response code.");
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'settings' => $settings
+            ]);
+
+            return null;
+        }
+
         // *Now* we're all done.
-        // TODO: Make the request to Statuspaginator from here
         Craft::$app->getSession()->setNotice('Settings saved.');
         return $this->redirectToPostedUrl();
+    }
+
+    private function register(): bool {
+        $client = new Client([
+            'http_errors' => false,
+            'base_uri' => App::env('STATUSPAGINATOR_API_URL')
+        ]);
+        $res = $client->post('register', [
+            'json' => [
+                'token' => Statuspaginator::$plugin->getSettings()->token,
+                'baseUrl' => App::env('PRIMARY_SITE_URL')
+            ]
+        ]);
+
+        if ($res->getStatusCode() !== 200) {
+            return false;
+        }
+
+        return true;
     }
 }
