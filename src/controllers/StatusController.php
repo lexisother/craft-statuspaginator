@@ -52,7 +52,8 @@ class StatusController extends Controller
             'php' => App::phpVersion(),
             'craft' => [
                 'edition' => App::editionName(Craft::$app->getEdition()),
-                'version' => Craft::$app->getVersion()
+                'version' => Craft::$app->getVersion(),
+                'updates' => Craft::$app->getApi()->getUpdates()
             ],
             'plugins' => $plugins
         ]);
