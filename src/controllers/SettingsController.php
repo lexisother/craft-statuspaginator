@@ -85,8 +85,10 @@ class SettingsController extends Controller {
         ]);
         $res = $client->post('register', [
             'json' => [
+                'name' => Craft::$app->getSystemName(),
+                'baseUrl' => App::env('PRIMARY_SITE_URL'),
+                'timezone' => Craft::$app->getTimeZone(),
                 'token' => Statuspaginator::$plugin->getSettings()->token,
-                'baseUrl' => App::env('PRIMARY_SITE_URL')
             ]
         ]);
 
