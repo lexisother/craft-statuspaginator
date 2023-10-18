@@ -56,10 +56,14 @@ class Statuspaginator extends Plugin
     }
 
     public function getRebrandAssets(): array {
+        if (Craft::$app->getEdition() === Craft::Solo) return ['icon' => false, 'logo' => false];
+
         $rebrand = new Rebrand();
+        $icon = $rebrand->getIcon();
+        $logo = $rebrand->getLogo();
         return [
-            'icon' => $rebrand->getIcon()->getUrl(),
-            'logo' => $rebrand->getLogo()->getUrl(),
+            'icon' => $icon && $icon->getUrl(),
+            'logo' => $logo && $logo->getUrl(),
         ];
     }
 
