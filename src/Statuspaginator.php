@@ -6,6 +6,7 @@ use Craft;
 use brikdigital\statuspaginator\models\Settings;
 use craft\base\Model;
 use craft\base\Plugin;
+use craft\web\twig\variables\Rebrand;
 
 /**
  * statuspaginator plugin
@@ -52,6 +53,14 @@ class Statuspaginator extends Plugin
             'plugin' => $this,
             'settings' => $this->getSettings()
         ]);
+    }
+
+    public function getRebrandAssets(): array {
+        $rebrand = new Rebrand();
+        return [
+            'icon' => $rebrand->getIcon()->getUrl(),
+            'logo' => $rebrand->getLogo()->getUrl(),
+        ];
     }
 
     private function attachEventHandlers(): void

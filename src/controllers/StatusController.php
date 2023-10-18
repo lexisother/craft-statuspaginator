@@ -2,8 +2,10 @@
 
 namespace brikdigital\statuspaginator\controllers;
 
+use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
 use craft\helpers\App;
+use craft\helpers\UrlHelper;
 use craft\utilities\SystemReport;
 use craft\web\Controller;
 use Illuminate\Support\Arr;
@@ -49,6 +51,10 @@ class StatusController extends Controller
         $plugins = Arr::map($plugins, fn ($p) => $p->version);
 
         return $this->asJson([
+            'meta' => [
+                'cpurl' => UrlHelper::cpUrl(),
+                'rebrand' => Statuspaginator::$plugin->getRebrandAssets(),
+            ],
             'php' => App::phpVersion(),
             'craft' => [
                 'edition' => App::editionName(Craft::$app->getEdition()),
