@@ -62,8 +62,8 @@ class Statuspaginator extends Plugin
         $icon = $rebrand->getIcon();
         $logo = $rebrand->getLogo();
         return [
-            'icon' => $icon && $icon->getUrl(),
-            'logo' => $logo && $logo->getUrl(),
+            'icon' => $icon ? $icon->getUrl() : false,
+            'logo' => $logo ? $logo->getUrl() : false,
         ];
     }
 
