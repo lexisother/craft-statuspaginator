@@ -6,7 +6,10 @@ use Craft;
 use brikdigital\statuspaginator\models\Settings;
 use craft\base\Model;
 use craft\base\Plugin;
+use craft\log\MonologTarget;
 use craft\web\twig\variables\Rebrand;
+use Monolog\Formatter\LineFormatter;
+use Psr\Log\LogLevel;
 
 /**
  * statuspaginator plugin
@@ -32,8 +35,22 @@ class Statuspaginator extends Plugin
     public function init(): void
     {
         parent::init();
-
         self::$plugin = $this;
+
+        // Register a custom log target, keeping the format as simple as possible.
+        Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
+            'name' => 'craft-statuspaginator',
+            'categories' => ['craft-statuspaginator'],
+            'level' => LogLevel::INFO,
+            'logContext' => false,
+            'allowLineBreaks' => false,
+            'formatter' => new LineFormatter(
+                format: "%datetime% [%channel%.%level_name%] [%extra.yii_category%] %message% %context% %extra%\n",
+                dateFormat: 'Y-m-d H:i:s',
+                allowInlineLineBreaks: true,
+                ignoreEmptyContextAndExtra: true,
+            )
+        ]);
 
         // Defer most setup tasks until Craft is fully initialized
         Craft::$app->onInit(function() {

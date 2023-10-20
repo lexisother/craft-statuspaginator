@@ -8,6 +8,7 @@ use craft\errors\MissingComponentException;
 use craft\helpers\App;
 use craft\web\Controller;
 use GuzzleHttp\Client;
+use Psr\Log\LogLevel;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -93,6 +94,7 @@ class SettingsController extends Controller {
         ]);
 
         if ($res->getStatusCode() !== 200) {
+            Craft::getLogger()->log("Failed to register.\n" . var_export($res, true), LogLevel::ERROR, 'craft-statuspaginator');
             return false;
         }
 
