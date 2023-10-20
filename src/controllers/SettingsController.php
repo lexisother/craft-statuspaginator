@@ -114,6 +114,7 @@ class SettingsController extends Controller {
         ]);
 
         if ($res->getStatusCode() !== 200) {
+            Craft::getLogger()->log("Failed to unregister.\n" . var_export($res, true), LogLevel::ERROR, 'craft-statuspaginator');
             return false;
         }
 
