@@ -6,6 +6,7 @@ use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
 use craft\errors\MissingComponentException;
 use craft\helpers\App;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use GuzzleHttp\Client;
 use Psr\Log\LogLevel;
@@ -87,7 +88,7 @@ class SettingsController extends Controller {
         $res = $client->post('register', [
             'json' => [
                 'name' => Craft::$app->getSystemName(),
-                'baseUrl' => App::env('PRIMARY_SITE_URL'),
+                'baseUrl' => UrlHelper::baseUrl(),
                 'timezone' => Craft::$app->getTimeZone(),
                 'token' => Statuspaginator::$plugin->getSettings()->token,
             ]
@@ -109,7 +110,7 @@ class SettingsController extends Controller {
         $res = $client->post('unregister', [
             'json' => [
                 'token' => Statuspaginator::$plugin->getSettings()->token,
-                'baseUrl' => App::env('PRIMARY_SITE_URL')
+                'baseUrl' => UrlHelper::baseUrl(),
             ]
         ]);
 
