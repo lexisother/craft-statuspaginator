@@ -90,7 +90,7 @@ class SettingsController extends Controller {
                 'name' => Craft::$app->getSystemName(),
                 'baseUrl' => UrlHelper::baseUrl(),
                 'timezone' => Craft::$app->getTimeZone(),
-                'token' => Statuspaginator::$plugin->getSettings()->token,
+                'token' => App::parseEnv(Statuspaginator::$plugin->getSettings()->token),
             ]
         ]);
 
@@ -109,7 +109,7 @@ class SettingsController extends Controller {
         ]);
         $res = $client->post('unregister', [
             'json' => [
-                'token' => Statuspaginator::$plugin->getSettings()->token,
+                'token' => App::parseEnv(Statuspaginator::$plugin->getSettings()->token),
                 'baseUrl' => UrlHelper::baseUrl(),
             ]
         ]);

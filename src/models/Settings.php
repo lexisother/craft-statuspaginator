@@ -10,13 +10,21 @@ use craft\base\Model;
  */
 class Settings extends Model
 {
+    public const ENV_REGEX = '/^\$(\w+)$/';
     public string $token = '';
 
     public function defineRules(): array
     {
         return [
             [['token'], 'required'],
-            [['token'], 'string', 'min' => 180]
+            [['token'], 'validateToken']
         ];
+    }
+
+    public function validateToken($attribute, $params, $validator)
+    {
+        if (!preg_match(self::ENV_REGEX, $this->$attribute) || strlen($this->$attribute) === 180) {
+           $this->addError($attribute, 'The token must be an environment variable or a 180 character string.');
+        }
     }
 }

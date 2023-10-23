@@ -29,13 +29,14 @@
         {{ csrfInput() }}
 
         {% namespace 'settings' %}
-            {{ forms.textField({
+            {{ forms.autosuggestField({
                 first: true,
                 label: 'Token',
                 instructions: 'Token known to Statuspaginator (see its .env file)',
                 id: 'token',
                 name: 'token',
                 value: settings.token,
+                suggestEnvVars: true,
                 autofocus: true,
                 required: true
             }) }}
