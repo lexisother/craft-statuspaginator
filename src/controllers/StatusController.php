@@ -1,14 +1,15 @@
-<?php
+<?php /** @noinspection PhpInternalEntityUsedInspection */
 
 namespace brikdigital\statuspaginator\controllers;
 
 use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
+use craft\controllers\AppController;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
-use craft\utilities\SystemReport;
 use craft\web\Controller;
 use Illuminate\Support\Arr;
+use ReflectionClass;
 use yii\web\Response;
 
 /**
@@ -59,9 +60,70 @@ class StatusController extends Controller
             'craft' => [
                 'edition' => App::editionName(Craft::$app->getEdition()),
                 'version' => Craft::$app->getVersion(),
-                'updates' => Craft::$app->getApi()->getUpdates()
+                'updates' => $this->getDetailedUpdates()
             ],
             'plugins' => $plugins
         ]);
+    }
+
+    /**
+     * Gets the detailed listing of updates.
+     *
+     * @return array
+     * @throws \ReflectionException
+     * @see https://github.com/craftcms/cms/blob/c706b6410623319d510ae36be20aa4b67c2ab026/src/web/assets/cp/src/js/CP.js#L1070-L1187
+     * @see https://github.com/craftcms/cms/blob/c706b6410623319d510ae36be20aa4b67c2ab026/src/controllers/AppController.php#L162-L225
+     */
+    public function getDetailedUpdates(): array
+    {
+        // First, let's get the update data in a regular manner.
+        $updatesService = Craft::$app->getUpdates();
+        $updates = $updatesService->getUpdates();
+
+        /**
+         * If we want, we can cache the results. For now, that's no concern. If
+         * we end up enabling caching, make sure to append `->toArray()` to the
+         * `getUpdates` call above!
+         */
+        // $updates = $updatesService->cacheUpdates($updates);
+
+        /**
+         * I found out that there is a function on any Yii application called
+         * `runAction`. In theory, this allows you to run controller actions
+         * from any point in your application.
+         * The function takes two arguments; the action name (in our case this
+         * would've been `app/check-for-updates` or `app/cache-updates`) and
+         * the parameters to pass to the action.
+         *
+         * The problem with this approach is that if the controller action
+         * decides "we are sending back JSON data, so the request must have
+         * `Accept: application/json` in its headers" (using
+         * `$this->requireAcceptsJson()`), this approach is immediately off the
+         * table because we cannot mask a `runAction` call as a web request
+         * that accepts JSON data as its return value.
+         *
+         * On top of that, the actual _response_ we're looking for is
+         * returned by a _private function_ on the controller.
+         *
+         * So, we are left with two options:
+         *   1. Make an actual HTTP request to the action to retrieve our data
+         *   2. Construct a fake instance of the controller and call the private function using reflection
+         *
+         * To minimize on request duration, I've opted for fetching an instance of the private method using reflection and calling it myself.
+         */
+        // Construct a dummy instance of the AppController with the necessary
+        // arguments. I retrieved these by writing a constructor directly in
+        // this class and logging out the three arguments typically passed into
+        // Yii controllers.
+        $obj = new AppController('app', Craft::$app, []);
+
+        // Now, make a reflectable copy of the controller class and make our
+        // private method invokable.
+        $reflector = new ReflectionClass($obj);
+        $method = $reflector->getMethod('_updatesResponse');
+        $method->setAccessible(true);
+
+        // Finally, get our detailed update data and return it.
+        return $method->invoke($obj, $updates, true)->data;
     }
 }
