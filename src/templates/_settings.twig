@@ -1,5 +1,7 @@
 {% extends "_layouts/cp" %}
 {% import '_includes/forms' as forms %}
+{% import '_statuspaginator/_includes/settings' as comps %}
+
 {% requireAdmin %}
 
 {# NOTE: Resources used and stolen while building this template:
@@ -17,6 +19,11 @@
 {% set docTitle = "Plugins"|t('app') %}
 
 {% block content %}
+    {{ comps.note({
+        type: 'tip',
+        text: 'Statuspaginator will <b>NOT</b> track this Craft instance after unregistering!'
+    }) }}
+
     <form action="" method="post" accept-charset="UTF-8" data-saveshortcut>
         {{ actionInput('_statuspaginator/settings/save-settings') }}
         {{ redirectInput('settings/plugins/_statuspaginator') }}

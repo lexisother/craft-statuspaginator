@@ -1,0 +1,10 @@
+{% macro note(config) %}
+    {% set type = config.type ?? 'tip' %}
+    {% set text = config.text ?? '' %}
+
+    <div class="readable" style="margin-bottom: 1rem">
+        <blockquote class="note {{ type }}">
+            <p>{{ text|raw }}</p>
+        </blockquote>
+    </div>
+{%- endmacro %}
