@@ -4,6 +4,7 @@ namespace brikdigital\statuspaginator\controllers;
 
 use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
+use craft\base\PluginInterface;
 use craft\controllers\AppController;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
@@ -48,8 +49,18 @@ class StatusController extends Controller
      */
     public function actionIndex(): Response
     {
-        $plugins = Craft::$app->getPlugins()->getAllPlugins();
-        $plugins = Arr::map($plugins, fn ($p) => $p->version);
+        $plugins = Arr::map(
+            Craft::$app->getPlugins()->getAllPlugins(),
+            fn (PluginInterface $plugin) =>
+            (object) [
+                'name' => $plugin->name,
+                'version' => $plugin->version,
+                'developer' => (object) [
+                    'name' => $plugin->developer,
+                    'developerUrl' => $plugin->developerUrl
+                ]
+            ]
+        );
 
         return $this->asJson([
             'meta' => [
