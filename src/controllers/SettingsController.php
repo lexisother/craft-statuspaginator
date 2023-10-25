@@ -52,20 +52,19 @@ class SettingsController extends Controller {
             return null;
         }
 
-        // Didn't register for some reason? Bail out.
+        // *Now* we're all done.
+        Craft::$app->getSession()->setNotice('Settings saved.');
+        return $this->redirectToPostedUrl();
+    }
+
+    public function actionRegister(): ?Response {
         $statuspaginatorPassed = $this->register();
         if (!$statuspaginatorPassed) {
             Craft::$app->getSession()->setError("Failed to register at Statuspaginator.");
-
-            Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
-            ]);
-
             return null;
         }
 
-        // *Now* we're all done.
-        Craft::$app->getSession()->setNotice('Settings saved.');
+        Craft::$app->getSession()->setNotice('Successfully registered.');
         return $this->redirectToPostedUrl();
     }
 
