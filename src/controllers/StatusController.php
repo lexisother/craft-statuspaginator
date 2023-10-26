@@ -54,6 +54,7 @@ class StatusController extends Controller
             fn (PluginInterface $plugin) =>
             (object) [
                 'name' => $plugin->name,
+                'description' => $plugin->description,
                 'version' => $plugin->version,
                 'developer' => (object) [
                     'name' => $plugin->developer,
