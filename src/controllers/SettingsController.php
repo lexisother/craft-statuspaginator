@@ -29,9 +29,12 @@ class SettingsController extends Controller {
         $settings = Statuspaginator::$plugin->getSettings();
         $settings->setAttributes($request->getParam('settings'), false);
 
+        Craft::getLogger()->log("Saving settings...", LogLevel::INFO, 'craft-statuspaginator');
+
         // Any validation errors? Bail out.
         if (!$settings->validate()) {
-            Craft::$app->getSession()->setError("Couldn't save settings.");
+            Craft::getLogger()->log("Failed to validate.\n" . var_export($settings->getErrors(), true), LogLevel::ERROR, 'craft-statuspaginator');
+            Craft::$app->getSession()->setError("Couldn't validate settings.");
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'settings' => $settings
@@ -39,10 +42,13 @@ class SettingsController extends Controller {
 
             return null;
         }
+
+        Craft::getLogger()->log("Passed settings validation.", LogLevel::INFO, 'craft-statuspaginator');
 
         // Somehow failed to save the settings? Bail out.
         $pluginSettingsSaved = Craft::$app->getPlugins()->savePluginSettings(Statuspaginator::$plugin, $settings->toArray());
         if (!$pluginSettingsSaved) {
+            Craft::getLogger()->log("Failed to save. Somehow.", LogLevel::ERROR, 'craft-statuspaginator');
             Craft::$app->getSession()->setError("Couldn't save settings.");
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -51,6 +57,8 @@ class SettingsController extends Controller {
 
             return null;
         }
+
+        Craft::getLogger()->log("Done!", LogLevel::INFO, 'craft-statuspaginator');
 
         // *Now* we're all done.
         Craft::$app->getSession()->setNotice('Settings saved.');
