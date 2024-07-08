@@ -6,6 +6,7 @@ use Craft;
 use brikdigital\statuspaginator\models\Settings;
 use craft\base\Model;
 use craft\base\Plugin;
+use craft\enums\CmsEdition;
 use craft\log\MonologTarget;
 use craft\web\twig\variables\Rebrand;
 use Monolog\Formatter\LineFormatter;
@@ -73,7 +74,7 @@ class Statuspaginator extends Plugin
     }
 
     public function getRebrandAssets(): array {
-        if (Craft::$app->getEdition() === Craft::Solo) return ['icon' => false, 'logo' => false];
+        if (Craft::$app->edition === CmsEdition::Solo) return ['icon' => false, 'logo' => false];
 
         $rebrand = new Rebrand();
         $icon = $rebrand->getIcon();

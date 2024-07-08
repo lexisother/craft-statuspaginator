@@ -6,11 +6,13 @@ use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
 use craft\base\PluginInterface;
 use craft\controllers\AppController;
+use craft\enums\CmsEdition;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use Illuminate\Support\Arr;
 use ReflectionClass;
+use ReflectionException;
 use yii\web\Response;
 
 /**
@@ -46,6 +48,7 @@ class StatusController extends Controller
 
     /**
      * _statuspaginator/status action
+     * @throws ReflectionException
      */
     public function actionIndex(): Response
     {
@@ -70,7 +73,7 @@ class StatusController extends Controller
             ],
             'php' => App::phpVersion(),
             'craft' => [
-                'edition' => App::editionName(Craft::$app->getEdition()),
+                'edition' => Craft::$app->edition->name,
                 'version' => Craft::$app->getVersion(),
                 'updates' => $this->getDetailedUpdates()
             ],
@@ -82,7 +85,7 @@ class StatusController extends Controller
      * Gets the detailed listing of updates.
      *
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @see https://github.com/craftcms/cms/blob/c706b6410623319d510ae36be20aa4b67c2ab026/src/web/assets/cp/src/js/CP.js#L1070-L1187
      * @see https://github.com/craftcms/cms/blob/c706b6410623319d510ae36be20aa4b67c2ab026/src/controllers/AppController.php#L162-L225
      */
@@ -133,7 +136,7 @@ class StatusController extends Controller
         // private method invokable.
         $reflector = new ReflectionClass($obj);
         $method = $reflector->getMethod('_updatesResponse');
-        $method->setAccessible(true);
+        $method->setAccessible(true); // no-op since 8.1 but keeping for posterity
 
         // Finally, get our detailed update data and return it.
         return $method->invoke($obj, $updates, true)->data;

@@ -5,12 +5,16 @@ namespace brikdigital\statuspaginator\controllers;
 use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
 use craft\errors\MissingComponentException;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LogLevel;
+use yii\base\Exception;
 use yii\web\BadRequestHttpException;
+use yii\web\MethodNotAllowedHttpException;
 use yii\web\Response;
 
 // See: <https://github.com/verbb/wishlist/blob/craft-4/src/controllers/SettingsController.php>
@@ -18,7 +22,7 @@ use yii\web\Response;
 class SettingsController extends Controller {
     /**
      * @throws MissingComponentException
-     * @throws BadRequestHttpException
+     * @throws BadRequestHttpException|MethodNotAllowedHttpException
      */
     public function actionSaveSettings(): ?Response
     {
@@ -65,6 +69,10 @@ class SettingsController extends Controller {
         return $this->redirectToPostedUrl();
     }
 
+    /**
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
+     */
     public function actionRegister(): ?Response {
         $statuspaginatorPassed = $this->register();
         if (!$statuspaginatorPassed) {
@@ -76,6 +84,10 @@ class SettingsController extends Controller {
         return $this->redirectToPostedUrl();
     }
 
+    /**
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
+     */
     public function actionUnregister(): ?Response {
         $statuspaginatorPassed = $this->unregister();
         if (!$statuspaginatorPassed) {
@@ -87,6 +99,11 @@ class SettingsController extends Controller {
         return $this->redirectToPostedUrl();
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws GuzzleException
+     * @throws Exception
+     */
     private function register(): bool {
         $client = new Client([
             'http_errors' => false,
@@ -109,6 +126,11 @@ class SettingsController extends Controller {
         return true;
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws GuzzleException
+     * @throws Exception
+     */
     private function unregister(): bool {
         $client = new Client([
             'http_errors' => false,

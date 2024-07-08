@@ -20,7 +20,7 @@ class Settings extends Model
         ];
     }
 
-    public function validateToken($attribute, $params, $validator)
+    public function validateToken($attribute, $params, $validator): void
     {
         if (!preg_match(self::ENV_REGEX, $this->$attribute)) {
             $this->addError($attribute, 'The token must be an environment variable.');
