@@ -17,7 +17,7 @@
         }
     },
     "extra": {
-        "handle": "_statuspaginator",
+        "handle": "statuspaginator",
         "name": "statuspaginator",
         "developer": "Brik.digital",
         "documentationUrl": "",

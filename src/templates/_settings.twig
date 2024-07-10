@@ -1,6 +1,6 @@
 {% extends "_layouts/cp" %}
 {% import '_includes/forms' as forms %}
-{% import '_statuspaginator/_includes/settings' as comps %}
+{% import 'statuspaginator/_includes/settings' as comps %}
 
 {% requireAdmin %}
 
@@ -25,8 +25,8 @@
     }) }}
 
     <form action="" method="post" accept-charset="UTF-8" data-saveshortcut>
-        {{ actionInput('_statuspaginator/settings/save-settings') }}
-        {{ redirectInput('settings/plugins/_statuspaginator') }}
+        {{ actionInput('statuspaginator/settings/save-settings') }}
+        {{ redirectInput('settings/plugins/statuspaginator') }}
         {{ csrfInput() }}
 
         {% namespace 'settings' %}
@@ -48,16 +48,16 @@
 
     <div style="display: flex; flex-direction: row; gap: 1rem;">
         <form action="" method="post" accept-charset="UTF-8">
-            {{ actionInput('_statuspaginator/settings/register') }}
-            {{ redirectInput('settings/plugins/_statuspaginator') }}
+            {{ actionInput('statuspaginator/settings/register') }}
+            {{ redirectInput('settings/plugins/statuspaginator') }}
             {{ csrfInput() }}
 
             <input type="submit" class="btn submit" value="{{ 'Register' }}">
         </form>
 
         <form action="" method="post" accept-charset="UTF-8">
-            {{ actionInput('_statuspaginator/settings/unregister') }}
-            {{ redirectInput('settings/plugins/_statuspaginator') }}
+            {{ actionInput('statuspaginator/settings/unregister') }}
+            {{ redirectInput('settings/plugins/statuspaginator') }}
             {{ csrfInput() }}
 
             <input type="submit" class="btn submit" value="{{ 'Unregister' }}">
