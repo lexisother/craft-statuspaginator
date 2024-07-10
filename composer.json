@@ -3,7 +3,7 @@
     "description": "Periodically pings a Statuspaginator instance with version data.",
     "type": "craft-plugin",
     "require": {
-        "php": ">=8.2",
+        "php": ">=7.4",
         "craftcms/cms": "^3.0.0",
         "putyourlightson/craft-log-to-file": "^1.2"
     },
@@ -31,7 +31,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "8.2"
+            "php": "7.4"
         },
         "allow-plugins": {
             "yiisoft/yii2-composer": true,
