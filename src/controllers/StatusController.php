@@ -6,11 +6,10 @@ use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
 use craft\base\PluginInterface;
 use craft\controllers\AppController;
-use craft\enums\CmsEdition;
 use craft\helpers\App;
+use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
-use Illuminate\Support\Arr;
 use ReflectionClass;
 use ReflectionException;
 use yii\web\Response;
@@ -44,7 +43,7 @@ class StatusController extends Controller
      * - An array of action ID/bitwise pairs (e.g. `['save-guest-entry' => self::ALLOW_ANONYMOUS_OFFLINE]` – indicates
      *   that the listed action IDs can be accessed anonymously per the bitwise int assigned to it.
      */
-    protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
+    protected $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
 
     /**
      * _statuspaginator/status action
@@ -52,8 +51,7 @@ class StatusController extends Controller
      */
     public function actionIndex(): Response
     {
-        $plugins = Arr::map(
-            Craft::$app->getPlugins()->getAllPlugins(),
+        $plugins = array_map(
             fn (PluginInterface $plugin) =>
             (object) [
                 'name' => $plugin->name,
@@ -63,7 +61,8 @@ class StatusController extends Controller
                     'name' => $plugin->developer,
                     'developerUrl' => $plugin->developerUrl
                 ]
-            ]
+            ],
+            Craft::$app->getPlugins()->getAllPlugins(),
         );
 
         return $this->asJson([
@@ -73,7 +72,7 @@ class StatusController extends Controller
             ],
             'php' => App::phpVersion(),
             'craft' => [
-                'edition' => Craft::$app->edition->name,
+                'edition' => App::editionName(Craft::$app->getEdition()),
                 'version' => Craft::$app->getVersion(),
                 'updates' => $this->getDetailedUpdates()
             ],

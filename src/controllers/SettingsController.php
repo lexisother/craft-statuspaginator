@@ -12,6 +12,7 @@ use craft\web\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LogLevel;
+use putyourlightson\logtofile\LogToFile;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\MethodNotAllowedHttpException;
@@ -37,7 +38,7 @@ class SettingsController extends Controller {
 
         // Any validation errors? Bail out.
         if (!$settings->validate()) {
-            Craft::getLogger()->log("Failed to validate.\n" . var_export($settings->getErrors(), true), LogLevel::ERROR, 'craft-statuspaginator');
+            LogToFile::log("Failed to validate.\n" . var_export($settings->getErrors(), true), 'craft-statuspaginator', 'error');
             Craft::$app->getSession()->setError("Couldn't validate settings.");
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -47,12 +48,12 @@ class SettingsController extends Controller {
             return null;
         }
 
-        Craft::getLogger()->log("Passed settings validation.", LogLevel::INFO, 'craft-statuspaginator');
+        LogToFile::log("Passed settings validation.", 'craft-statuspaginator');
 
         // Somehow failed to save the settings? Bail out.
         $pluginSettingsSaved = Craft::$app->getPlugins()->savePluginSettings(Statuspaginator::$plugin, $settings->toArray());
         if (!$pluginSettingsSaved) {
-            Craft::getLogger()->log("Failed to save. Somehow.", LogLevel::ERROR, 'craft-statuspaginator');
+            LogToFile::log("Failed to save. Somehow.", 'craft-statuspaginator', 'error');
             Craft::$app->getSession()->setError("Couldn't save settings.");
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -62,7 +63,7 @@ class SettingsController extends Controller {
             return null;
         }
 
-        Craft::getLogger()->log("Done!", LogLevel::INFO, 'craft-statuspaginator');
+        LogToFile::log("Done!", 'craft-statuspaginator');
 
         // *Now* we're all done.
         Craft::$app->getSession()->setNotice('Settings saved.');
@@ -119,7 +120,7 @@ class SettingsController extends Controller {
         ]);
 
         if ($res->getStatusCode() !== 200) {
-            Craft::getLogger()->log("Failed to register.\n" . var_export($res, true), LogLevel::ERROR, 'craft-statuspaginator');
+            LogToFile::log("Failed to register.\n" . var_export($res, true), 'craft-statuspaginator', 'error');
             return false;
         }
 
@@ -144,7 +145,7 @@ class SettingsController extends Controller {
         ]);
 
         if ($res->getStatusCode() !== 200) {
-            Craft::getLogger()->log("Failed to unregister.\n" . var_export($res, true), LogLevel::ERROR, 'craft-statuspaginator');
+            LogToFile::log("Failed to unregister.\n" . var_export($res, true), 'craft-statuspaginator', 'error');
             return false;
         }
 

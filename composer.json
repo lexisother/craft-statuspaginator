@@ -4,7 +4,8 @@
     "type": "craft-plugin",
     "require": {
         "php": ">=8.2",
-        "craftcms/cms": "^5.0.0"
+        "craftcms/cms": "^3.0.0",
+        "putyourlightson/craft-log-to-file": "^1.2"
     },
     "require-dev": {
         "craftcms/ecs": "dev-main",
@@ -38,4 +39,3 @@
         }
     }
 }
-

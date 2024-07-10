@@ -6,10 +6,7 @@ use Craft;
 use brikdigital\statuspaginator\models\Settings;
 use craft\base\Model;
 use craft\base\Plugin;
-use craft\enums\CmsEdition;
-use craft\log\MonologTarget;
 use craft\web\twig\variables\Rebrand;
-use Monolog\Formatter\LineFormatter;
 use Psr\Log\LogLevel;
 
 /**
@@ -38,26 +35,7 @@ class Statuspaginator extends Plugin
         parent::init();
         self::$plugin = $this;
 
-        // Register a custom log target, keeping the format as simple as possible.
-        Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
-            'name' => 'craft-statuspaginator',
-            'categories' => ['craft-statuspaginator'],
-            'level' => LogLevel::INFO,
-            'logContext' => false,
-            'allowLineBreaks' => false,
-            'formatter' => new LineFormatter(
-                format: "%datetime% [%channel%.%level_name%] [%extra.yii_category%] %message% %context% %extra%\n",
-                dateFormat: 'Y-m-d H:i:s',
-                allowInlineLineBreaks: true,
-                ignoreEmptyContextAndExtra: true,
-            )
-        ]);
-
-        // Defer most setup tasks until Craft is fully initialized
-        Craft::$app->onInit(function() {
-            $this->attachEventHandlers();
-            // ...
-        });
+        $this->attachEventHandlers();
     }
 
     protected function createSettingsModel(): ?Model
@@ -67,14 +45,14 @@ class Statuspaginator extends Plugin
 
     public function getSettingsResponse(): mixed
     {
-        return Craft::$app->controller->renderTemplate('_statuspaginator/_settings.twig', [
+        return Craft::$app->getView()->renderTemplate('_statuspaginator/_settings.twig', [
             'plugin' => $this,
             'settings' => $this->getSettings()
         ]);
     }
 
     public function getRebrandAssets(): array {
-        if (Craft::$app->edition === CmsEdition::Solo) return ['icon' => false, 'logo' => false];
+        if (Craft::$app->getEdition() === Craft::Solo) return ['icon' => false, 'logo' => false];
 
         $rebrand = new Rebrand();
         $icon = $rebrand->getIcon();
