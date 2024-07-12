@@ -64,9 +64,9 @@ class Statuspaginator extends Plugin
         return Craft::createObject(Settings::class);
     }
 
-    public function getSettingsResponse(): mixed
+    public function settingsHtml(): ?string
     {
-        return Craft::$app->controller->renderTemplate('_statuspaginator/_settings.twig', [
+        return Craft::$app->view->renderTemplate('statuspaginator/_settings.twig', [
             'plugin' => $this,
             'settings' => $this->getSettings()
         ]);

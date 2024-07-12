@@ -16,8 +16,8 @@
         }
     },
     "extra": {
-        "handle": "_statuspaginator",
-        "name": "statuspaginator",
+        "handle": "statuspaginator",
+        "name": "Statuspaginator",
         "developer": "Brik.digital",
         "documentationUrl": "",
         "class": "brikdigital\\statuspaginator\\Statuspaginator"
