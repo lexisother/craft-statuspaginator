@@ -6,7 +6,6 @@ use brikdigital\statuspaginator\Statuspaginator;
 use Craft;
 use craft\base\PluginInterface;
 use craft\controllers\AppController;
-use craft\enums\CmsEdition;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
@@ -89,7 +88,7 @@ class StatusController extends Controller
      * @see https://github.com/craftcms/cms/blob/c706b6410623319d510ae36be20aa4b67c2ab026/src/web/assets/cp/src/js/CP.js#L1070-L1187
      * @see https://github.com/craftcms/cms/blob/c706b6410623319d510ae36be20aa4b67c2ab026/src/controllers/AppController.php#L162-L225
      */
-    public function getDetailedUpdates(): array
+    protected function getDetailedUpdates(): array
     {
         // First, let's get the update data in a regular manner.
         $updatesService = Craft::$app->getUpdates();
