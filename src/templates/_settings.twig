@@ -1,66 +1,13 @@
-{% extends "_layouts/cp" %}
 {% import '_includes/forms' as forms %}
-{% import 'statuspaginator/_includes/settings' as comps %}
 
-{% requireAdmin %}
-
-{# NOTE: Resources used and stolen while building this template:
-    - https://craftcms.com/docs/4.x/extend/plugin-settings.html
-    - https://github.com/verbb/wishlist/blob/craft-4/src/templates/settings/general/index.html
-#}
-
-{% set crumbs = [
-    { label: "Settings"|t('app'), url: url('settings') },
-    { label: "Plugins"|t('app'), url: url('settings/plugins') }
-] %}
-
-{% set fullPageForm = true %}
-{% set title = plugin.name|title %}
-{% set docTitle = "Plugins"|t('app') %}
-
-{% block content %}
-    {{ comps.note({
-        type: 'tip',
-        text: 'Statuspaginator will <b>NOT</b> track this Craft instance after unregistering!'
-    }) }}
-
-    <form action="" method="post" accept-charset="UTF-8" data-saveshortcut>
-        {{ actionInput('statuspaginator/settings/save-settings') }}
-        {{ redirectInput('settings/plugins/statuspaginator') }}
-        {{ csrfInput() }}
-
-        {% namespace 'settings' %}
-            {{ forms.autosuggestField({
-                first: true,
-                label: 'Token',
-                instructions: 'Token known to Statuspaginator (see its .env file)',
-                id: 'token',
-                name: 'token',
-                value: settings.token,
-                suggestEnvVars: true,
-                autofocus: true,
-                required: true
-            }) }}
-        {% endnamespace %}
-    </form>
-
-    <hr />
-
-    <div style="display: flex; flex-direction: row; gap: 1rem;">
-        <form action="" method="post" accept-charset="UTF-8">
-            {{ actionInput('statuspaginator/settings/register') }}
-            {{ redirectInput('settings/plugins/statuspaginator') }}
-            {{ csrfInput() }}
-
-            <input type="submit" class="btn submit" value="{{ 'Register' }}">
-        </form>
-
-        <form action="" method="post" accept-charset="UTF-8">
-            {{ actionInput('statuspaginator/settings/unregister') }}
-            {{ redirectInput('settings/plugins/statuspaginator') }}
-            {{ csrfInput() }}
-
-            <input type="submit" class="btn submit" value="{{ 'Unregister' }}">
-        </form>
-    </div>
-{% endblock %}
+{{ forms.autosuggestField({
+    first: true,
+    label: 'Token',
+    instructions: 'Token known to Statuspaginator (see its .env file)',
+    id: 'token',
+    name: 'token',
+    value: settings.token,
+    suggestEnvVars: true,
+    autofocus: true,
+    required: true
+}) }}

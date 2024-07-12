@@ -18,8 +18,8 @@ use Psr\Log\LogLevel;
 class Statuspaginator extends Plugin
 {
     public static Statuspaginator $plugin;
-    public string $schemaVersion = '1.0.0';
-    public bool $hasCpSettings = true;
+    public $schemaVersion = '1.0.0';
+    public $hasCpSettings = true;
 
     public static function config(): array
     {
@@ -43,9 +43,9 @@ class Statuspaginator extends Plugin
         return Craft::createObject(Settings::class);
     }
 
-    public function getSettingsResponse(): mixed
+    public function settingsHtml(): mixed
     {
-        return Craft::$app->getView()->renderTemplate('statuspaginator/_settings.twig', [
+        return Craft::$app->view->renderTemplate('statuspaginator/_settings.twig', [
             'plugin' => $this,
             'settings' => $this->getSettings()
         ]);
