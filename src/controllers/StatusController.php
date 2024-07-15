@@ -49,6 +49,12 @@ class StatusController extends Controller
      */
     public function actionIndex(): Response
     {
+        $this->requirePostRequest();
+
+        $theirToken = $this->request->getBodyParam('token');
+        $ourToken = App::parseEnv(Statuspaginator::$plugin->getSettings()->token);
+        if ($theirToken !== $ourToken) return $this->asJson(['error' => 'Tokens do not match']);
+
         $plugins = Arr::map(
             Craft::$app->getPlugins()->getAllPlugins(),
             fn (PluginInterface $plugin) =>
