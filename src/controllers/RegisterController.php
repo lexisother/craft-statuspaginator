@@ -12,7 +12,7 @@ class RegisterController extends Controller
 {
     protected $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
     public $enableCsrfValidation = false;
-    public $enableSnaptchaValidation = false
+    public $enableSnaptchaValidation = false;
 
     public function actionIndex(): ?Response
     {
