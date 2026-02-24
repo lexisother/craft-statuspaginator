@@ -20,7 +20,7 @@ class StatusController extends Controller
 {
     protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
     public $enableCsrfValidation = false;
-    public $enableSnaptchaValidation = false
+    public $enableSnaptchaValidation = false;
 
     /**
      * _statuspaginator/status action
