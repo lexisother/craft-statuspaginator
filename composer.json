@@ -2,6 +2,7 @@
     "name": "brikdigital/craft-statuspaginator",
     "description": "Periodically pings a Statuspaginator instance with version data.",
     "type": "craft-plugin",
+    "license": "MPL-2.0",
     "require": {
         "php": ">=8.2",
         "craftcms/cms": "^5.0.0"
