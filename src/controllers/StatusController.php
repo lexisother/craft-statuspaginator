@@ -51,6 +51,12 @@ class StatusController extends Controller
             'meta' => [
                 'cpurl' => UrlHelper::cpUrl(),
                 'rebrand' => Statuspaginator::$plugin->getRebrandAssets(),
+                'environment' => Craft::$app->env
+                    ?? Craft::$app->config->env
+                    ?? App::env('CRAFT_ENVIRONMENT'),
+                'isDev' => Craft::$app->config->general->devMode
+                    ?? App::env('CRAFT_DEV_MODE')
+                    ?? App::env('DEV_MODE')
             ],
             'php' => App::phpVersion(),
             'craft' => [
@@ -105,7 +111,7 @@ class StatusController extends Controller
          *   1. Make an actual HTTP request to the action to retrieve our data
          *   2. Construct a fake instance of the controller and call the private function using reflection
          *
-         * To minimize on request duration, I've opted for fetching an instance of the private method using reflection and calling it myself.
+         * To minimize on request duration, I've opted for the latter.
          */
         // Construct a dummy instance of the AppController with the necessary
         // arguments. I retrieved these by writing a constructor directly in
